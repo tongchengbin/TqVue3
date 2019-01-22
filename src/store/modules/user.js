@@ -50,9 +50,9 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
+          const data = response.data;
+          commit('SET_TOKEN', data.token);
+          setToken(response.data.token);
           resolve()
         }).catch(error => {
           reject(error)
@@ -68,16 +68,8 @@ const user = {
             reject('error')
           }
           const data = response.data;
-          var roles=[];
-          for(var i=0;i<data.roles_vo.length;i++) {
-            roles.push(data.roles_vo[i].name)
-          }
-          if (data.roles_vo && data.roles_vo.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
-          }
-          commit('SET_NAME', data.name);
+          commit('SET_ROLES',data.roles_vo);
+          commit('SET_NAME', data.username);
           commit('SET_AVATAR', data.avatar);
           commit('SET_INTRODUCTION', data.introduction);
           resolve(response)
@@ -86,8 +78,6 @@ const user = {
         })
       })
     },
-
-
     // 第三方验证登录
     // LoginByThirdparty({ commit, state }, code) {
     //   return new Promise((resolve, reject) => {
@@ -113,8 +103,8 @@ const user = {
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout().then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
+          commit('SET_TOKEN', '');
+          commit('SET_ROLES', []);
           removeToken();
           resolve()
         }).catch(error => {
@@ -140,6 +130,6 @@ const user = {
       })
     }
   }
-}
+};
 
 export default user

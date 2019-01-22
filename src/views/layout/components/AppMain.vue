@@ -1,10 +1,6 @@
 <template>
   <section class="app-main">
-    <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cachedViews">
         <router-view :key="key"/>
-      </keep-alive>
-    </transition>
   </section>
 </template>
 
@@ -24,11 +20,12 @@ export default {
 
 <style scoped>
 .app-main {
-  padding: 1.25rem;
+  /*padding: 1.25rem;*/
   min-height: calc(100vh - 84px);
   width: 100%;
   position: relative;
   overflow: hidden;
+  background-color: #f9f9fa;
 }
 </style>
 
