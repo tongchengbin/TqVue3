@@ -38,18 +38,18 @@ export const constantRouterMap = [
     children: [
       {
         path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
+        component: () => import('../views/redirect/index')
       }
     ]
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('../views/login/index'),
     hidden: true
   },
   {
     path: '/auth-redirect',
-    component: () => import('@/views/login/authredirect'),
+    component: () => import('../views/login/authredirect'),
     hidden: true
   },
   {
@@ -163,6 +163,15 @@ export const asyncRouterMap = [
             // { path: 'taobaocourse', name: 'taobaocourse', component: () => import('@/views/shop/taobaoCourse'), meta: { title: 'taobaocourse', icon: 'form' }},
             { path: 'weiboapi', name: 'WeiboApi', component: () => import('@/views/shop/weiboapi'), meta: { title: 'WeiboApi', icon: 'tq-weibo' }},
             // { path: 'sexx', name: 'sexx', component: () => import('@/views/shop/sexx'), meta: { title: '蝌蚪', icon: 'kdw', roles: ['superuser'] }}
+        ]
+    },
+    {
+        path: '/resource',
+        component: Layout,
+        name: 'resource',
+        meta: { title: '资源', icon: 'tq-shop' },
+        children: [
+            { path: 'pandownload', name: '网盘资源搜索', component: () => import('../views/resource/PanDownloadSearch'), meta: { title: '百度资源搜索', icon: 'tq-kecheng' }}
         ]
     },
     {

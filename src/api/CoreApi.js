@@ -15,7 +15,8 @@ export default  {
   SHOP_CATEGORY_PK: '/api/admin/shop/category/{pk}/',
   SHOP_QIAOHUORSER_LIST: '/api/admin/shop/qiaohuorder/',
   SHOP_QIAOHUTASK_PK: '/api/admin/shop/qiaohuorder/{pk}/',
-  SHOP_QIAOHUTASK_LIST: '/api/admin/shop/qiaohurecord/'
+  SHOP_QIAOHUTASK_LIST: '/api/admin/shop/qiaohurecord/',
+    PANDOWNLOAD_SEARCH:"/api/admin/pandownload/search/"
 
 
 

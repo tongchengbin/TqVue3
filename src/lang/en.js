@@ -111,7 +111,7 @@ export default {
     importance: 'Imp',
     type: 'Type',
     remark: 'Remark',
-    search: 'Search',
+    search: 'resource',
     add: 'Add',
     export: 'Export',
     reviewer: 'reviewer',
