@@ -3,9 +3,10 @@ export default  {
   ADMIN_LOGIN:'/api/admin/login/',
   QINIU_TOKEN:'/api/admin/qiniu_token/',
   WEIBO_API:'/api/weiboapi/',
-  ACCOUNT_ROLE_PK: '/api/admin/role/{pk}', // 获取角色列表
+  ACCOUNT_ROLE_PK: '/api/admin/role/{pk}/', // 获取角色列表
   ACCOUNT_ROLE_LIST: '/api/admin/role/',
   ACCOUNT_ROLE_TREE: '/api/admin/role/tree/',
+    ACCOUNT_ROLE_ALL_LIST: '/api/admin/role/all/',
   ACCOUNT_ROLE_SETMENU:"api/admin/role/{pk}/setmenu/", // 设置角色菜单
   ACCOUNT_USER_LIST: '/api/admin/user/', // 获取角色列表
   ACCOUNT_USER_PK: '/api/admin/user/{pk}/', // 获取角色列表

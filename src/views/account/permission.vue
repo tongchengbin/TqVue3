@@ -27,7 +27,14 @@
             <div class="text item">
               <el-form :model="leftTree.form" ref="form">
                 <el-form-item label="父级" :label-width="formLabelWidth">
-                  <el-button type="primary" size="small" @click="changeParentMenu(leftTree.form)">修改</el-button>
+                  <el-select v-model="leftTree.form.parent_id" clearable filterable placeholder="请选择">
+                    <el-option
+                            v-for="item in menuOptions"
+                            :key="item.id"
+                            :label="item.nodes"
+                            :value="item.id">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="名称" :label-width="formLabelWidth">
                   <el-input v-model="leftTree.form.name" auto-complete="off"></el-input>
@@ -113,7 +120,7 @@
           checkedRole:[]
         },
         //数据列表
-        treeOptions:[],
+        menuOptions:[],
         formLabelWidth: '100px',
         defaultProps: {
           children: 'children',
@@ -158,14 +165,10 @@
         this.leftTree.form = data;
       },
       newAdd(){
-        this.form = {
+        this.leftTree.form = {
           id: null,
           parent_id: null,
           name: '',
-          enName: '',
-          sort: 0,
-          usable: '1',
-          remarks: ''
         };
       },
       selectclear(){
@@ -200,6 +203,12 @@
           this.leftTree.loading=false;
         });
       },
+        getAllMenu(){
+          http.get(api.ACCOUNT_MENU_LIST,{}).then(res=>{
+              this.menuOptions=res.data.data
+
+          });
+        },
       settingResource(id){
         //配置资源  id:角色id
         this.roleData.pk=id;
@@ -214,6 +223,7 @@
     },
     created(){
       this.featchData();
+      this.getAllMenu();
     }
   }
 </script>

@@ -52,19 +52,20 @@ export const constantRouterMap = [
     component: () => import('../views/login/authredirect'),
     hidden: true
   },
-  {
-    path: '/404',
-    component: () => import('@/views/errorPage/404'),
-    hidden: true
-  },
+
   {
     path: '/401',
     component: () => import('@/views/errorPage/401'),
     hidden: true
   },
-  { path: '*', redirect: '/404', hidden: true },
+
+    {
+        path: '/404',
+        component: () => import('@/views/errorPage/404'),
+        hidden: true
+    },
   {
-    path: '',
+    path: '/',
     component: Layout,
     redirect: 'dashboard',
     children: [
@@ -89,7 +90,6 @@ export const asyncRouterMap = [
         path: '/account',
         component: Layout,
         name: 'system',
-        noCache: true,
         meta: {
             title: '系统管理',
             icon: 'tq-yonghuguanli',
@@ -101,8 +101,9 @@ export const asyncRouterMap = [
             { path: 'permission', component: () => import('@/views/account/permission'), name: 'permission', meta: { title: '权限', icon: 'tq-quanxian1' }}
         ]
     },
+
   {
-    path: '/icon', component: Layout,
+    path: '/icon',
     component: () => import('@/views/svg-icons/index'),
     name: 'Icons',
     meta: { title: 'icons', icon: 'tq-icon', noCache: true}
@@ -119,7 +120,6 @@ export const asyncRouterMap = [
             // { path: 'imoocedit/:id(\\d+)', name: 'imoocedit', hidden: true, component: () => import('@/views/shop/imoocedit'), meta: { title: 'Edit', icon: 'tree' }},
             { path: 'qiaohuorder', name: 'QiaohuOrder', component: () => import('@/views/shop/qiaohuOrder'), meta: { title: '巧虎订单', icon: 'tq-ertong' }},
             { path: 'qiaohurecord', name: 'QiaohuRecordd', component: () => import('@/views/shop/qiaohuRecord'), meta: { title: '巧虎任务执行', icon: 'tq-ertong' }},
-            { path: 'yunpan', name: 'yunpan', component: () => import('@/views/shop/yunpan'), meta: { title: '云盘精灵', icon: '网盘' }},
             // { path: 'taobaocourse', name: 'taobaocourse', component: () => import('@/views/shop/taobaoCourse'), meta: { title: 'taobaocourse', icon: 'form' }},
             { path: 'weiboapi', name: 'WeiboApi', component: () => import('@/views/shop/weiboapi'), meta: { title: 'WeiboApi', icon: 'tq-weibo' }},
             { path: 'kdw', name: 'kdw', component: () => import('@/views/shop/sexx'), meta: { title: '蝌蚪', icon: 'tq-weibiaoti1' }}

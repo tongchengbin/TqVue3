@@ -28,28 +28,17 @@
                         <div class="text item">
                             <el-form :model="form" ref="form">
                                 <el-form-item label="父级" :label-width="formLabelWidth">
-                                    <el-select v-model="form.pid_id" filterable placeholder="请选择">
+                                    <el-select v-model="form.pid_id" clearable filterable placeholder="请选择">
                                         <el-option
-                                                :clearable="true"
-                                                v-for="item in treeOptions"
+                                                v-for="item in MenuOptions"
                                                 :key="item.id"
-                                                :label="item.label"
+                                                :label="item.name"
                                                 :value="item.id">
                                         </el-option>
                                     </el-select>
                                 </el-form-item>
                                 <el-form-item label="名称" :label-width="formLabelWidth">
-                                    <el-input v-model="form.label" auto-complete="off"></el-input>
-                                </el-form-item>
-                                <el-form-item label="英文" :label-width="formLabelWidth">
-                                    <el-input v-model="form.enName" auto-complete="off"></el-input>
-                                </el-form-item>
-                                <el-form-item label="是否生效" :label-width="formLabelWidth">
-                                    <el-radio class="radio" v-model="form.usable" label="1">是</el-radio>
-                                    <el-radio class="radio" v-model="form.usable" label="0">否</el-radio>
-                                </el-form-item>
-                                <el-form-item label="排序" :label-width="formLabelWidth">
-                                    <el-slider v-model="form.sort"></el-slider>
+                                    <el-input v-model="form.name" auto-complete="off"></el-input>
                                 </el-form-item>
                                 <el-form-item label="" :label-width="formLabelWidth">
                                     <el-button type="primary" @click="onSubmit" v-text="form.id?'修改':'新增'"></el-button>
@@ -94,7 +83,6 @@
     import panel from "@/components/panel.vue"
     import http from '@/api/public'
     import api from '@/api/CoreApi'
-    import CoreApi from "../../api/CoreApi";
     export default {
         components: {
             'imp-panel': panel,
@@ -115,7 +103,7 @@
                 checkMenu:[]
               },
                 //数据列表
-                treeOptions:[],
+                MenuOptions:[],
                 formLabelWidth: '100px',
                 defaultProps: {
                     children: 'children',
@@ -128,10 +116,7 @@
                 form: {
                     id: null,
                     pid_id: null,
-                    label: '',
-                    enName: '',
-                    sort: 0,
-                    usable: '1'
+                    name: '',
                 }
             }
         },
@@ -146,6 +131,12 @@
             },
             handleNodeClick(data){
                 this.form = data;
+            },
+            getAllRoleList(){
+                // 获取所有角色
+                http.get(api.ACCOUNT_ROLE_ALL_LIST,{}).then(res=>{
+                    this.roleOptions=res.data.data;
+                })
             },
             newAdd(){
                 this.form = {
@@ -184,27 +175,17 @@
                 });
             },
             onSubmit(){
-                this.form.pid=this.form.pid_id;
                 if(this.form.id){
-                    http.put(api.SHOP_CATEGORY_PK, this.form,this.form.id)
-                        .then(res => {
-                            this.featchData()
-                        }).catch(e => {
-                        let errorMsgs=e.response.data.label || e.response.data.non_field_errors;
-                        console.log(errorMsgs);
-                        this.$message({
-                            message: errorMsgs[0],
-                            type: 'error',
-                            duration: 1500
-                        })
+                    //修改
+                    http.put(api.ACCOUNT_ROLE_PK, this.form,this.form.id).then(res => {
+                        this.featchData()
                     });
                 }else{
-                    // add
-                    http.post(api.SHOP_CATEGORY_LIST,this.form).then(
+                    // 新增
+                    http.post(api.ACCOUNT_ROLE_LIST,this.form).then(res=> {
                         this.featchData()
-                    )
+                })
                 }
-
             },
             deleteSelected(id){
               this.leftRoleTree.loading=true;
@@ -234,6 +215,8 @@
           }
         },
       created(){
+        //    获取所有角色tree_list
+          this.getAllRoleList();
         this.featchData();
       }
     }

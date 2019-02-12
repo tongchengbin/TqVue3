@@ -28,11 +28,15 @@ function filterAsyncRouter(routes, menu) {
     if (hasPermission(menu, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRouter(tmp.children, menu);
+        if(tmp.children.length>0){
+          res.push(tmp)
+        }
+      }else{
+          res.push(tmp)
       }
-      res.push(tmp)
+
     }
   });
-
   return res
 }
 
@@ -51,9 +55,10 @@ const permission = {
     GenerateRoutes({ commit }, menu) {
       return new Promise(resolve => {
         let accessedRouters;
-        accessedRouters = filterAsyncRouter(asyncRouterMap, menu)
-        router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
+        accessedRouters = filterAsyncRouter(asyncRouterMap, menu);
+        accessedRouters.push({ path: '*', redirect: '/404', hidden: true });
         commit('SET_ROUTERS', accessedRouters);
+        router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
         resolve()
       })
     }
