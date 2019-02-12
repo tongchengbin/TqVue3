@@ -188,7 +188,6 @@ export default {
           http.get(api.ACCOUNT_ROLE_LIST)
               .then(res=>{
                   this.rolesData.data=res.data;
-                  console.log(res.data)
               })
       },
       getList() {
@@ -225,7 +224,6 @@ export default {
         this.getList()
       },
       handleUpdate(row) {
-          console.log(row);
           this.userForm = row;
           this.userFormdialogFormVisible = true;
           http.get(api.ACCOUNT_ROLE_LIST).then(res=>{

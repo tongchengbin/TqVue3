@@ -1,31 +1,33 @@
 import { asyncRouterMap, constantRouterMap } from '@/router'
+import store from "../index";
+import router from "../../router";
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
- * @param roles
+ * @param menu
  * @param route
  */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
+function hasPermission(menu, route) {
+  for(let i=0;i<menu.length;i++){
+    if(menu[i].key===route.name){
+      return true
+    }
   }
+  return false
 }
 
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
  * @param routes asyncRouterMap
- * @param roles
+ * @param menu
  */
-function filterAsyncRouter(routes, roles) {
+function filterAsyncRouter(routes, menu) {
   const res = [];
-
   routes.forEach(route => {
     const tmp = { ...route };
-    if (hasPermission(roles, tmp)) {
+    if (hasPermission(menu, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRouter(tmp.children, roles)
+        tmp.children = filterAsyncRouter(tmp.children, menu);
       }
       res.push(tmp)
     }
@@ -46,15 +48,11 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes({ commit }, data) {
+    GenerateRoutes({ commit }, menu) {
       return new Promise(resolve => {
-        const { roles } = data;
         let accessedRouters;
-        if (roles.includes('admin')) {
-          accessedRouters = asyncRouterMap
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        }
+        accessedRouters = filterAsyncRouter(asyncRouterMap, menu)
+        router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
         commit('SET_ROUTERS', accessedRouters);
         resolve()
       })

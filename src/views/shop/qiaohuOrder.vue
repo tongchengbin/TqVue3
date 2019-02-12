@@ -204,7 +204,6 @@ export default {
       })
     },
     handleCreate() {
-      console.log('fsdfsdf')
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },

@@ -28,6 +28,9 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 });
 
+//在main.js内
+import VideoPlayer from 'vue-video-player'
+Vue.use(VideoPlayer);
 Vue.config.productionTip = false;
 
 new Vue({

@@ -40,3 +40,34 @@ export function numberFormatter(num, digits) {
 export function toThousandFilter(num) {
   return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
+
+export function maxSize(value,len){
+  if(value.length<len){
+    return value
+  }else{
+    return value.slice(0,len)+"..."
+  }
+}
+
+export  function msDate(date) {
+  let sdate = new Date(date);
+  let month = sdate.getMonth();//月
+  let day = sdate.getDate();//日
+  let now=new Date();
+  let days =parseInt((now.getTime() - sdate.getTime())/(1000 * 60 * 60 * 24));
+  if(days>365){
+    let year=parseInt(days/365);
+    return year.toString()+"年前"
+  }else if(days>30){
+    let month=parseInt(days/30);
+    return month+"个月前"
+  }else if(days>7){
+    return month+"月"+day+"日"
+  }else if(days>1){
+    return days+"天前"
+  }else{
+    return "今天"
+  }
+  return days
+
+}

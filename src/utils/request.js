@@ -13,8 +13,6 @@ service.interceptors.request.use(config => {
     config.headers['Content-Type'] ='application/json;charset=UTF-8';
     config.headers['Authorization'] = getToken()
   }
-  console.log("请求拦截");
-    console.log(config);
   return config
 },error => {
   Promise.reject(error)
@@ -23,6 +21,15 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use((response) => {
   return response
 }, function(error) {
+  if(!error.response){
+    Message({
+      message: '网络错误！',
+      type: 'error',
+      duration: 5 * 1000,
+      center:true
+    });
+    return Promise.reject(error)
+  }
   switch (error.response.status) {
     case 302:
       window.location = '/login';

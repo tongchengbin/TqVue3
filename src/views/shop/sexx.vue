@@ -1,11 +1,11 @@
 <template>
-  <div class="app-container">
-    <el-form :inline="true">
+  <div class="app-container" >
+    <el-form :inline="true" size="small">
       <div class="filter-container">
         <el-form-item>
-          <el-input v-model="listQuery.search" style="width: 200px;"  placeholder="搜索"></el-input>
-          <el-select class="" v-model="listQuery.ordering" >
-            <el-option v-for="item in  orderoptions" :key="item.value" :label="item.label" :value="item.value">
+          <el-input v-model="params.search" style="width: 150px;"  placeholder="搜索"></el-input>
+          <el-select  v-model="params.ordering" style="width: 100px">
+            <el-option  v-for="item in  orderoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
           <el-date-picker
@@ -15,80 +15,61 @@
             unlink-panels
             format
             value-format="yyyy-MM-dd"
-            range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             @change="pickTime"
             :picker-options="pickerOptions2">
           </el-date-picker>
-          <el-button class="f" type="primary"  icon="el-icon-search" @click="handleFilter">Search</el-button>
+          <el-button  type="primary"  icon="el-icon-search" @click="handleFilter"></el-button>
         </el-form-item>
       </div>
     </el-form>
-      <el-row>
-        <el-col :span="4" v-for="(item, index) in items" :key="index" class="el-box" >
-          <el-card :body-style="{ padding: '0px' }" class="card-box" style="height: 340px">
-            <a :href="item.url" target="_blank"><img :src="item.index_img" class="card-img" @click="diaplayer(item)" ></a>
+      <el-row v-loading="listDataLoading"  element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
+        <div v-if="items.length==0&&!listDataLoading">
+          <h2 style="text-align: center">无数据</h2>
+        </div>
+        <el-col  :span="4" v-for="(item, index) in items" :key="index" class="el-box" >
+          <el-card class="card-box" style="height: 340px">
+            <img :title="item.title" :src="item.index_img" @click="goSexx(item)" class="card-img" >
             <div style="padding: 14px;">
-              <div style="height: 2.5rem;overflow: hidden;padding: 2px 0">
-                <a :href="item.url" target="_blank">{{item.title}}</a>
+              <div style="padding: 2px 0;height: 40px">
+                <a :href="item.url" target="_blank"  :title="item.title">{{item.title | maxSize(15)}}</a>
               </div>
-              <div>
-                <span style="margin: auto 4px"><svg-icon icon-class="people_blue" style="font-size: 1rem;"/> {{item.views_num}}</span>
-                <span style="margin: auto 4px"><svg-icon icon-class="好评" style="font-size: 1rem;"/> {{item.praise_rate}}</span>
-                <span style="margin: auto 4px"><svg-icon icon-class="time" style="font-size: 1rem;"/> {{item.upload_time | formatDate }}</span>
+              <div class="summary">
+                <div style="display: block;height: 20px;padding: 4px 0">
+                  <span style="float: left;"><i class="iconfont tq-liulanliang" style="font-size:16px;"></i> {{item.views_num}}</span>
+                  <span style="float: right;"> <i class="iconfont tq-haoping" style="font-size:16px;color: #d4237a;"></i>&nbsp;{{item.praise_rate}}</span>
+                </div>
+                <div style="display: block;padding-top: 4px" ><i class="iconfont tq-shangchuanshijian"/> {{item.upload_time | msDate }}</div>
               </div>
             </div>
           </el-card>
         </el-col>
       </el-row>
+    <!--<video-player  class="video-player vjs-custom-skin"-->
+                   <!--ref="videoPlayer"-->
+                   <!--:playsinline="true"-->
+                   <!--:options="playerOptions"-->
+    <!--&gt;-->
+    <!--</video-player>-->
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[24,30,36, 42]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="params.page"
+                     :page-sizes="[24,48,60]"  :page-size="params.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                     style="float:right;">
       </el-pagination>
     </div>
-    <el-dialog :visible.sync="dialogVisiblePlayer" style="background: none!important;">
-      <div v :visible.sync="dialogVisiblePlayer">
-        <video-player class="vjs-custom-skin"
-                       ref="videoPlayer"
-                       :options="playerOptions"
-                       :playsinline="true"
-                       @play="onPlayerPlay($event)"
-                       @pause="onPlayerPause($event)"
-                       @ended="onPlayerEnded($event)"
-                       @loadeddata="onPlayerLoadeddata($event)"
-                       @waiting="onPlayerWaiting($event)"
-                       @playing="onPlayerPlaying($event)"
-                       @timeupdate="onPlayerTimeupdate($event)"
-                       @canplay="onPlayerCanplay($event)"
-                       @canplaythrough="onPlayerCanplaythrough($event)"
-                       @statechanged="playerStateChanged($event)">
-        </video-player>
-      </div>
-    </el-dialog>
+
   </div>
 </template>
 <script>
-  // 第一个是videoJs的样式，后一个是vue-video-player的样式，因为考虑到我其他业务组件可能也会用到视频播放，所以就放在了main.js内
+  import request from '../../api/public'
+  import CoreApi from '../../api/CoreApi'
+  import VideoPlayer from 'vue-video-player'
   require('video.js/dist/video-js.css')
   require('vue-video-player/src/custom-theme.css')
-  import infiniteScroll from 'vue-infinite-scroll'
-  import { sexxlist } from '@/api/shop'
-  // import mallGoods from './components/mallGoods'
-  import InfiniteLoading from 'vue-infinite-loading'
-  import videoPlayer from './components/player'
-
   export default {
-    components: { videoPlayer,
-      player() {
-        return this.$refs.videoPlayer.player
-      },
-      // mallGoods,
-      InfiniteLoading,
-      infiniteScroll },
     data() {
       return {
-        busy: true,
-        temp_time: null,
         total: null,
         orderoptions: [
           {
@@ -114,39 +95,10 @@
 
         ],
         dialogVisiblePlayer: false,
-        playerOptions: {
-          playbackRates: [0.7, 1.0, 1.5, 2.0], // 播放速度
-          autoplay: false, // 如果true,浏览器准备好时开始回放。
-          muted: false, // 默认情况下将会消除任何音频。
-          loop: false, // 导致视频一结束就重新开始。
-          preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-          language: 'zh-CN',
-          aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-          fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-          sources: [{
-            type: 'video/mp4',
-            src: ''
-          }],
-          poster: '',
-          width: document.documentElement.clientWidth,
-          // notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
-          controlBar: {
-            timeDivider: true,
-            durationDisplay: true,
-            remainingTimeDisplay: false,
-            fullscreenToggle: true// 全屏按钮
-          }
-        },
-        imageSrc: this.src,
-        loading: false,
         items: [],
-        computer: [],
-        timer: null,
-        sortType: 1,
-        windowHeight: null,
-        windowWidth: null,
         data: [],
-        listQuery: {
+        temp_time:null,
+        params: {
           search: null,
           lang: null,
           pagesize: 36,
@@ -155,6 +107,7 @@
           upload_time__gt: null,
           upload_time__lt: null
         },
+        listDataLoading:false,
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -181,6 +134,29 @@
               picker.$emit('pick', [start, end])
             }
           }]
+        },
+        playerOptions : {
+          playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
+          autoplay: false, //如果true,浏览器准备好时开始回放。
+          muted: false, // 默认情况下将会消除任何音频。
+          loop: false, // 导致视频一结束就重新开始。
+          preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+          language: 'zh-CN',
+          aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+          fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+          sources: [{
+            type: "video/mp4",
+            src: "http://www.caca050.com/get_file/3/2148293f28ae9fc64d36426224956656/60000/60678/60678.mp4/?br=345&rnd=1549453484921"
+          }],
+          poster: "http://cdn-img.tadpoles.xyz/contents/videos_screenshots/52000/52051/180x135/1.jpg", //你的封面地址
+          // width: document.documentElement.clientWidth,
+          notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+          controlBar: {
+            timeDivider: true,
+            durationDisplay: true,
+            remainingTimeDisplay: false,
+            fullscreenToggle: true  //全屏按钮
+          }
         }
       }
     },
@@ -199,171 +175,68 @@
     methods: {
       pickTime(time) {
         if (time) {
-          this.listQuery.upload_time__gt = time[0]
-          this.listQuery.upload_time__lt = time[1]
+          this.params.upload_time__gt = time[0]
+          this.params.upload_time__lt = time[1]
         } else {
-          this.listQuery.upload_time__gt = null
-          this.listQuery.upload_time__lt = null
+          this.params.upload_time__gt = null
+          this.params.upload_time__lt = null
         }
       },
       featchData() {
-        sexxlist(this.listQuery).then(response => {
-          this.items = response.data.results
-          this.total = response.data.count
+        this.listDataLoading=true;
+        request.get(CoreApi.SHOP_KDW_LIST,this.params).then(res=>{
+          this.items=res.data.results;
+          this.total=res.data.total;
+          this.listDataLoading=false;
         })
+
       },
       handleSizeChange(val) {
-        this.listQuery.pagesize = val
+        this.params.pagesize = val;
         this.featchData()
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val
+        this.params.page = val;
         this.featchData()
       },
-      diaplayer(item) {
-        console.log(item)
-        this.playerOptions.sources[0].src = item.video_url
-        console.log(item.video_url)
-        // this.playerOptions.poster = item.index_img
-        this.dialogVisiblePlayer = true
-      },
-      // listen event
-      onPlayerPlay(player) {
-        console.log('player play!', player)
-      },
-      onPlayerPause(player) {
-        console.log('player pause!', player)
-      },
-      onPlayerEnded(player) {
-        console.log('player ended!', player)
-      },
-      onPlayerLoadeddata(player) {
-        console.log('player Loadeddata!', player)
-      },
-      onPlayerWaiting(player) {
-        console.log('player Waiting!', player)
-      },
-      onPlayerPlaying(player) {
-        console.log('player Playing!', player)
-      },
-      onPlayerTimeupdate(player) {
-        // console.log('player Timeupdate!', player.currentTime())
-      },
-      onPlayerCanplay(player) {
-        console.log('player Canplay!', player)
-      },
-      onPlayerCanplaythrough(player) {
-        console.log('player Canplaythrough!', player)
-      },
-      // or listen state event
-      playerStateChanged(playerCurrentState) {
-        // console.log('player current update state', playerCurrentState)
-      },
-      loadMore() {
-        this.loading = true
-        this.listQuery.offset += this.listQuery.limit
+      handleCurrentChange(val) {
+        this.params.page = val;
         this.featchData()
-        this.loading = false
       },
       handleFilter() {
-        this.items = []
+        this.items = [];
         this.featchData()
+      },
+      goSexx(item){
+        console.log(item.id)
+        request.get(CoreApi.SHOP_KDW_FILE,{},item.id).then(res=>{
+          // window.open(res.data.location, "_blank");
+          this.$confirm(res.data.location, '', {
+            confirmButtonText: '确定',
+            type: 'success',
+            showCancelButton:false,
+            center:true
+          })
+        })
+
       }
     },
     created() {
       this.featchData()
     },
-    mounted() {
-      // setTimeout(() => {
-      //   console.log('dynamic change options', this.player)
-      //   this.playerOptions.muted(false)
-      // }, 5000)
-    }
   }
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
-  @import "../../assets/style/mixin";
-  .el-box {
-    padding: 5px 10px;
-  }
-  .card-box {
-  }
-  .card-img {
+  .card-img{
     width: 100%;
-    padding: 20px 10px;
-    margin: auto;
   }
-  .nav {
-    height: 60px;
-    line-height: 60px;
-    > div {
-      display: flex;
-      align-items: center;
-      a {
-        padding: 0 15px;
-        height: 100%;
-        @extend %block-center;
-        font-size: 12px;
-        color: #999;
-        &.active {
-          color: #5683EA;
-        }
-        &:hover {
-          color: #5683EA;
-        }
-      }
-      input {
-        @include wh(80px, 30px);
-        border: 1px solid #ccc;
-      }
-      input + input {
-        margin-left: 10px;
-      }
-    }
-    .price-interval {
-      padding: 0 15px;
-      @extend %block-center;
-      input[type=number] {
-        border: 1px solid #ccc;
-        text-align: center;
-        background: none;
-        border-radius: 5px;
-      }
-    }
+  .el-box{
+    padding: 4px;
   }
-  .load-more {
-    text-align: center;background: #fff
+  .el-card__body{
+    padding: 10px;
   }
-  .goods-box {
-    > div {
-      float: left;
-      border: 1px solid #efefef;
-    }
-  }
-   .container{
-     overflow: auto;
-     width: 100%;
-     background-color: white;
-     display: flex;
-     flex-wrap:wrap;
-     justify-content:space-around;
-     align-items: center;
-     align-content: space-between;
-     .box{  flex: 0 0 15%; height: 300px;
-          img {
-            width: 200px;
-            height: 180px;
-            overflow: hidden;
-          }
-     }
-   }
-  .loading-bubbles {
-    margin-bottom: 50px;
-  }
-  .el-dialog__header{
-    padding: 0 0 ;
-  }
-  .el-dialog__body {
-    padding: 0 0 ;
+  .summary{
+    float: bottom;
   }
 </style>

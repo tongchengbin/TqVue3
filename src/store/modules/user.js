@@ -4,6 +4,7 @@ import request from '@/api/public'
 import CoreApi from '@/api/CoreApi'
 const user = {
   state: {
+    info:{},
     user: '',
     status: '',
     code: '',
@@ -12,15 +13,13 @@ const user = {
     avatar: '',
     introduction: '',
     roles: [],
+    menu:[],
     setting: {
       articlePlatform: []
     }
   },
 
   mutations: {
-    SET_CODE: (state, code) => {
-      state.code = code
-    },
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -30,8 +29,11 @@ const user = {
     SET_SETTING: (state, setting) => {
       state.setting = setting
     },
-    SET_STATUS: (state, status) => {
-      state.status = status
+    SET_INFO: (state, data) => {
+      state.info = data
+    },
+    SET_MENU:(state,menu) =>{
+      state.menu = menu
     },
     SET_NAME: (state, name) => {
       state.name = name
@@ -64,33 +66,18 @@ const user = {
       const data={};
       return new Promise((resolve, reject) => {
           getInfoData(data).then(response => {
-          if (!response.data) {
-            reject('error')
-          }
           const data = response.data;
+          commit('SET_INFO',data);
+          commit('SET_MENU',data.menu);
           commit('SET_ROLES',data.roles_vo);
           commit('SET_NAME', data.username);
           commit('SET_AVATAR', data.avatar);
-          commit('SET_INTRODUCTION', data.introduction);
           resolve(response)
         }).catch(error => {
           reject(error)
         })
       })
     },
-    // 第三方验证登录
-    // LoginByThirdparty({ commit, state }, code) {
-    //   return new Promise((resolve, reject) => {
-    //     commit('SET_CODE', code)
-    //     loginByThirdparty(state.status, state.email, state.code).then(response => {
-    //       commit('SET_TOKEN', response.data.token)
-    //       setToken(response.data.token)
-    //       resolve()
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
     FedLogOut({ commit, state }){
         return new Promise((resolve, reject) => {
                 commit('SET_TOKEN', '');
@@ -116,15 +103,13 @@ const user = {
     // 动态修改权限
     ChangeRoles({ commit, dispatch }, role) {
       return new Promise(resolve => {
-        commit('SET_TOKEN', role)
-        setToken(role)
+        commit('SET_TOKEN', role);
         getUserInfo(role).then(response => {
-          const data = response.data
-          commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
-          dispatch('GenerateRoutes', data) // 动态修改权限后 重绘侧边菜单
+          const data = response.data;
+          commit('SET_ROLES', data.roles);
+          commit('SET_NAME', data.name);
+          commit('SET_AVATAR', data.avatar);
+          dispatch('GenerateRoutes', data.menu); // 动态修改权限后 重绘侧边菜单
           resolve()
         })
       })

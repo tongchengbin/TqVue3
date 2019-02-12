@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
 import Layout from '@/views/layout/Layout'
@@ -62,6 +62,7 @@ export const constantRouterMap = [
     component: () => import('@/views/errorPage/401'),
     hidden: true
   },
+  { path: '*', redirect: '/404', hidden: true },
   {
     path: '',
     component: Layout,
@@ -87,7 +88,7 @@ export const asyncRouterMap = [
     {
         path: '/account',
         component: Layout,
-        name: 'account',
+        name: 'system',
         noCache: true,
         meta: {
             title: '系统管理',
@@ -96,56 +97,15 @@ export const asyncRouterMap = [
         },
         children: [
             { path: 'user', component: () => import('@/views/account/user'), name: 'user', noCache: true, meta: { title: '用户', icon: 'tq-yonghuguanli' }},
-            { path: 'role', component: () => import('@/views/account/role'), name: 'role', meta: { title: '角色', icon: 'tq-jiaoseshezhi' }},
+            { path: 'role', component: () => import('../views/account/role'), name: 'role', meta: { title: '角色', icon: 'tq-jiaoseshezhi' }},
             { path: 'permission', component: () => import('@/views/account/permission'), name: 'permission', meta: { title: '权限', icon: 'tq-quanxian1' }}
         ]
     },
-  // {
-  //   path: '/permission',
-  //   component: Layout,
-  //   redirect: '/permission/index',
-  //   alwaysShow: true, // will always show the root menu
-  //   meta: {
-  //     title: 'permission',
-  //     icon: 'lock',
-  //     roles: ['admin', 'editor'] // you can set roles in root nav
-  //   },
-  //   children: [
-  //     {
-  //       path: 'page',
-  //       component: () => import('@/views/permission/page'),
-  //       name: 'PagePermission',
-  //       meta: {
-  //         title: 'pagePermission',
-  //         roles: ['admin'] // or you can only set roles in sub nav
-  //       }
-  //     },
-  //     {
-  //       path: 'directive',
-  //       component: () => import('@/views/permission/directive'),
-  //       name: 'DirectivePermission',
-  //       meta: {
-  //         title: 'directivePermission'
-  //         // if do not set roles, means: this page does not require permission
-  //       }
-  //     }
-  //   ]
-  // },
-
   {
-
-
-
-    path: '/icon',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/svg-icons/index'),
-        name: 'Icons',
-        meta: { title: 'icons', icon: 'tq-icon', noCache: true }
-      }
-    ]
+    path: '/icon', component: Layout,
+    component: () => import('@/views/svg-icons/index'),
+    name: 'Icons',
+    meta: { title: 'icons', icon: 'tq-icon', noCache: true}
   },
     {
         path: '/shop',
@@ -159,10 +119,10 @@ export const asyncRouterMap = [
             // { path: 'imoocedit/:id(\\d+)', name: 'imoocedit', hidden: true, component: () => import('@/views/shop/imoocedit'), meta: { title: 'Edit', icon: 'tree' }},
             { path: 'qiaohuorder', name: 'QiaohuOrder', component: () => import('@/views/shop/qiaohuOrder'), meta: { title: '巧虎订单', icon: 'tq-ertong' }},
             { path: 'qiaohurecord', name: 'QiaohuRecordd', component: () => import('@/views/shop/qiaohuRecord'), meta: { title: '巧虎任务执行', icon: 'tq-ertong' }},
-            // { path: 'yunpan', name: 'yunpan', component: () => import('@/views/shop/yunpan'), meta: { title: '云盘精灵', icon: '网盘' }},
+            { path: 'yunpan', name: 'yunpan', component: () => import('@/views/shop/yunpan'), meta: { title: '云盘精灵', icon: '网盘' }},
             // { path: 'taobaocourse', name: 'taobaocourse', component: () => import('@/views/shop/taobaoCourse'), meta: { title: 'taobaocourse', icon: 'form' }},
             { path: 'weiboapi', name: 'WeiboApi', component: () => import('@/views/shop/weiboapi'), meta: { title: 'WeiboApi', icon: 'tq-weibo' }},
-            // { path: 'sexx', name: 'sexx', component: () => import('@/views/shop/sexx'), meta: { title: '蝌蚪', icon: 'kdw', roles: ['superuser'] }}
+            { path: 'kdw', name: 'kdw', component: () => import('@/views/shop/sexx'), meta: { title: '蝌蚪', icon: 'tq-weibiaoti1' }}
         ]
     },
     {
@@ -171,7 +131,7 @@ export const asyncRouterMap = [
         name: 'resource',
         meta: { title: '资源', icon: 'tq-shop' },
         children: [
-            { path: 'pandownload', name: '网盘资源搜索', component: () => import('../views/resource/PanDownloadSearch'), meta: { title: '百度资源搜索', icon: 'tq-kecheng' }}
+            { path: 'pandownload', name: 'pandownload', component: () => import('../views/resource/PanDownloadSearch'), meta: { title: '百度资源搜索', icon: 'tq-kecheng' }}
         ]
     },
     {
@@ -196,79 +156,4 @@ export const asyncRouterMap = [
   // nestedRouter,
   // tableRouter,
 
-
-
-
-
-  // {
-  //   path: '/error',
-  //   component: Layout,
-  //   redirect: 'noredirect',
-  //   name: 'ErrorPages',
-  //   meta: {
-  //     title: 'errorPages',
-  //     icon: '404'
-  //   },
-  //   children: [
-  //     {
-  //       path: '401',
-  //       component: () => import('@/views/errorPage/401'),
-  //       name: 'Page401',
-  //       meta: { title: 'page401', noCache: true }
-  //     },
-  //     {
-  //       path: '404',
-  //       component: () => import('@/views/errorPage/404'),
-  //       name: 'Page404',
-  //       meta: { title: 'page404', noCache: true }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: '/error-log',
-  //   component: Layout,
-  //   redirect: 'noredirect',
-  //   children: [
-  //     {
-  //       path: 'log',
-  //       component: () => import('@/views/errorLog/index'),
-  //       name: 'ErrorLog',
-  //       meta: { title: 'errorLog', icon: 'bug' }
-  //     }
-  //   ]
-  // },
-  //
-  //
-  // {
-  //   path: '/theme',
-  //   component: Layout,
-  //   redirect: 'noredirect',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/theme/index'),
-  //       name: 'Theme',
-  //       meta: { title: 'theme', icon: 'theme' }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: '/clipboard',
-  //   component: Layout,
-  //   redirect: 'noredirect',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/clipboard/index'),
-  //       name: 'ClipboardDemo',
-  //       meta: { title: 'clipboardDemo', icon: 'clipboard' }
-  //     }
-  //   ]
-  // },
-
-
-
-  { path: '*', redirect: '/404', hidden: true }
 ];

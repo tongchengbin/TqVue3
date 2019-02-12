@@ -78,7 +78,6 @@
                 http.get(api.PANDOWNLOAD_SEARCH,this.form).then(res=>{
                     this.listLoading=false;
                     this.DataListTotal=res.data.total;
-                    console.log("res",res);
                     this.DataList=res.data.data;
                 })
             },
@@ -111,7 +110,6 @@
             },
             handleCurrentChange(val) {
                 this.form.page = val;
-                console.log("page")
                 this.searchSubmit()
             },
         },

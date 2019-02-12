@@ -24,13 +24,11 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' });
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
-      console.log(store.getters.roles,"role")
       if (!store.getters.name) {
         // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetUserInfo').then(res => { // 拉取user_info
-          console.log(store.getters.name);
-          const  roles=store.getters.roles;
-          store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+          const  menu=store.getters.menu;
+          store.dispatch('GenerateRoutes', menu).then(() => { // 根据roles权限生成可访问的路由表
             router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
