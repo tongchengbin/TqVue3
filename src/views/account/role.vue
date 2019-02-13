@@ -124,7 +124,7 @@
             configRoleResources(){
                 let data = this.$refs.resourceTree.getCheckedKeys();
                 this.setResource.loading=true;
-                http.post(CoreApi.ACCOUNT_ROLE_SETMENU,{data},this.setResource.pk).then(res=>{
+                http.post(api.ACCOUNT_ROLE_SETMENU,{data},this.setResource.pk).then(res=>{
                   this.setResource.loading=false;
                   this.setResource.dialogVisible = false;
                 });
