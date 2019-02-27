@@ -9,7 +9,7 @@ import router from "../../router";
  */
 function hasPermission(menu, route) {
   for(let i=0;i<menu.length;i++){
-    if(menu[i].key===route.name){
+    if(menu[i].key===route.keyword){
       return true
     }
   }
@@ -48,7 +48,7 @@ const permission = {
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers;
-      state.routers = constantRouterMap.concat(routers)
+      state.routers = constantRouterMap.concat(routers);
     }
   },
   actions: {
@@ -58,7 +58,6 @@ const permission = {
         accessedRouters = filterAsyncRouter(asyncRouterMap, menu);
         accessedRouters.push({ path: '*', redirect: '/404', hidden: true });
         commit('SET_ROUTERS', accessedRouters);
-        router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
         resolve()
       })
     }

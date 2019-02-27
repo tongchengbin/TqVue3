@@ -1,41 +1,48 @@
 <template>
-    <div>
+    <div class="app-container">
         <el-form class="search-form" v-if="showSearch">
             <el-form-item>
-                <!--居中-->
-                <el-input size="medium" v-model="form.key" maxlength="20" clearable class="search-input">
-                    <el-button @click="searchSubmit" size="medium" slot="append" class="iconfont tq-search-color" style="color: #2178f1" ></el-button>
+                <el-input @keyup.enter.native="searchSubmit"  maxlength="20" placeholder="请输入内容" v-model="form.key" class="input-with-select search-color">
+                    <el-button @click="searchSubmit"  type="primary"   slot="append" icon="el-icon-search search-color"></el-button>
                 </el-input>
             </el-form-item>
         </el-form>
         <div>
-            <el-form v-if="!showSearch" inline="true">
+            <el-form v-if="!showSearch">
                     <el-form-item>
-                        <el-input v-model="form.key" style="width: 200px;"><el-button @click="searchSubmit" slot="append" icon="el-icon-search"></el-button></el-input>
+                        <el-input v-model="form.key" style="width: 200px;"></el-input>
+                        <el-button type="primary" @click="searchSubmit"  icon="el-icon-search"></el-button>
                     </el-form-item>
             </el-form>
-            <el-table v-if="!showSearch"  :data="DataList" highlight-current-row  border style="width: 100%;" v-loading="listLoading">
-                <el-table-column prop="rank" label=序号 width="50"></el-table-column>
-                <el-table-column prop="title" label=名称 width="350">
+            <el-table v-if="!showSearch"  :data="DataList" highlight-current-row stripe fit highlight-current-row  border style="width: 100%;" v-loading="listLoading">
+                <el-table-column type="expand" prop="list">
+                    <template slot-scope="props">
+                        <div v-for="title,index in props.row.list">
+                            <li>{{title}}</li>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" prop="rank"  label=序号 width="50"></el-table-column>
+                <el-table-column align="center"  prop="title" label=名称 width="450">
                     <template slot-scope="scope">
                         <i class="iconfont" :class="filetype(scope.row)" style="padding-right: 10px"></i>{{ scope.row.title}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="ctime" label=修改时间 width="160">
+                <el-table-column align="center"  prop="ctime" label=修改时间 width="160">
                     <template slot-scope="scope">
                         {{ scope.row.ctime | timestampToTime }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="user" label=分享人 width="200"></el-table-column>
-                <el-table-column label=大小 width="80">
+                <el-table-column align="center"  prop="user" label=分享人 width="200"></el-table-column>
+                <el-table-column align="center"  label=大小 width="80">
                     <template slot-scope="scope">
                         {{ scope.row.size | sizeTranslation }}
                     </template>
                 </el-table-column>
-                <el-table-column  label=操作 width="150">
+                <el-table-column align="center"   label=操作 width="400px">
                     <template slot-scope="scope">
-                        <a type="buttom" :href="scope.row.surl" target="_blank">Open</a>
-                        <el-button v-if="scope.row.needpassword" @click="getPassword(scope.row)">密码</el-button>
+                        <el-button type="primary" size="small"><a type="buttom" :href="scope.row.surl" target="_blank">打开连接</a></el-button>
+                        <el-button type="success" v-if="scope.row.needpassword" @click="getPassword(scope.row)">查看密码</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -47,7 +54,6 @@
                 </el-pagination>
             </el-col>
         </div>
-
     </div>
 
 </template>
@@ -114,6 +120,10 @@
             },
         },
         filters:{
+            strfilter(str){
+                console.log(str);
+                return "我是新数据";
+            },
             timestampToTime (cjsj) {
                 var date = new Date(cjsj*1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
                 var Y = date.getFullYear() + '-';
@@ -149,5 +159,4 @@
         margin-top: 300px;
         min-height: 500px;
     }
-
 </style>

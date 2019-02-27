@@ -7,7 +7,7 @@
           <el-input v-model="listQuery.search" style="width: 200px;"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="listQuery.ispay" placeholder="支付状态">
+          <el-select v-model="listQuery.is_pay" placeholder="支付状态">
             <el-option
                     v-for="item in paytype"
                     :key="item.value"
@@ -18,37 +18,36 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary"  icon="el-icon-search" @click="handleSearch" >搜索</el-button>
-          <el-button type="primary"  icon="el-icon-edit" @click="handleCreate" >添加</el-button>
+          <el-button type="primary"   icon="el-icon-edit" @click="handleCreate" >添加</el-button>
         </el-form-item>
       </el-form>
     </el-col>
 
-    <div style="width: 100%">
-      <el-table :data="list" style="width: 100%" border fit highlight-current-row >
-        <el-table-column prop="email" label="邮箱" ></el-table-column>
-        <el-table-column prop="url" label="连接"></el-table-column>
-        <el-table-column prop="order_num" label="数量" width="70px"></el-table-column>
-        <el-table-column prop="completed" label="已完成" width="70px"></el-table-column>
-        <el-table-column prop="order_price" label="金额" width="70px"></el-table-column>
-        <el-table-column prop="pay_type" label="支付方式" width="80px"></el-table-column>
-        <el-table-column prop="source" label="来源" width="80px"></el-table-column>
-        <el-table-column  align="center" label="申请时间">
-          <template slot-scope="scope">
+    <div  align="center">
+      <el-table :data="list"  border fit highlight-current-row >
+        <el-table-column align="center" prop="user_info.username" label="操作人" width="150px"></el-table-column>
+        <el-table-column align="center" prop="order_num" label="数量" width="80px"></el-table-column>
+        <el-table-column align="center" prop="completed" label="已完成" width="80px"></el-table-column>
+        <el-table-column align="center" prop="order_price" label="金额" width="80px"></el-table-column>
+        <el-table-column align="center" prop="pay_type" label="支付方式" width="90px"></el-table-column>
+        <el-table-column align="center" prop="source" label="来源" width="90px"></el-table-column>
+        <el-table-column align="center" label="申请时间" width="190px">
+          <template align="center" slot-scope="scope">
             <span>{{scope.row.ctime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
           </template>
         </el-table-column>
-        <el-table-column  label="支付">
-          <template slot-scope="scope">
-            <el-button v-if=scope.row.is_pay type="primary">已支付</el-button>
-            <el-button v-else type="warning">待支付</el-button>
+        <el-table-column align="center"  label="支付" width="150px">
+          <template slot-scope="scope" >
+            <span v-if=scope.row.is_pay style="color: #409eff" >已支付</span>
+            <strong v-else style="color: #909399">待支付</strong>
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注"></el-table-column>
-        <el-table-column align="center" label="Actions" width="270">
+        <el-table-column align="center" label="Actions" width="300px">
           <template slot-scope="scope">
             <el-button  type="success" @click="handleTask(scope.row)" size="small" icon="el-icon-circle-check-outline">任务</el-button>
-            <el-button  type="success" @click="handleUpdate(scope.row)" size="small" icon="el-icon-circle-check-outline">编辑</el-button>
-            <el-button  type="warning" @click="handleDelete(scope.row,scope.$index)" size="small" icon="el-icon-edit">删除</el-button>
+            <el-button  type="info" @click="handleUpdate(scope.row)" size="small" icon="el-icon-circle-check-outline">编辑</el-button>
+            <el-button  type="danger" @click="handleDelete(scope.row,scope.$index)" size="small" icon="el-icon-edit">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -64,9 +63,6 @@
     <!--添加-->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form  ref="dataForm" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="temp.email"></el-input>
-        </el-form-item>
         <el-form-item label="分享连接" prop="url">
           <el-input v-model="temp.url"></el-input>
         </el-form-item>
@@ -144,7 +140,6 @@ export default {
       dialogFormVisible: false,
       dialogStatus: null,
       temp: {
-        email: null,
         url: null,
         is_pay: null,
         order_num: null
@@ -198,7 +193,7 @@ export default {
     handleTask(row) {
     //  查看任务
       this.taskFormVisible=true;
-      this.task_params.order=row.id
+      this.task_params.order=row.id;
       request.get(CoreApi.SHOP_QIAOHUTASK_LIST,this.task_params).then(res=>{
         this.taskdata=res.data.results
       })
@@ -215,11 +210,11 @@ export default {
       this.fetchData()
     },
     handleSizeChange(val) {
-      this.listQuery.pagesize = val
-      this.getList()
+      this.listQuery.pagesize = val;
+      this.fetchData()
     },
     handleUpdate(row) {
-      this.dialogFormVisible = true
+      this.dialogFormVisible = true;
       this.temp = row
     },
     handleDelete(row, index) {
@@ -228,7 +223,7 @@ export default {
           message: '删除成功',
           type: 'success'
         })
-      })
+      });
       this.list.splice(index, 1)
     }
   }
