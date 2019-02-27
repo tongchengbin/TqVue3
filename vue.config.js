@@ -10,7 +10,7 @@ module.exports = {
             .set('@', resolve('src')) // key,value自行定义，比如.set('@@', resolve('src/components'))
     },
     // 将构建好的文件输出到哪里
-    outputDir: 'dist',
+    outputDir: 'public',
 
     // 放置静态资源的地方 (js/css/img/font/...)
     // assetsDir: '',
