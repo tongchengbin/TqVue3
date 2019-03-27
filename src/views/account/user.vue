@@ -149,7 +149,6 @@ export default {
           },
           userFormdialogFormVisible:false,
           userForm:{
-              dialogFormVisible:false,
               email: null,
               id: null,
               username: null,

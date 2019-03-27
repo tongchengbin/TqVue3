@@ -6,13 +6,13 @@
       </div>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
-          <svg-icon icon-class="user" />
+          <i class="iconfont tq-user-name"></i>
         </span>
         <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="用户名"/>
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
-          <svg-icon icon-class="password" />
+          <i class="iconfont tq-pswd"></i>
         </span>
         <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
           placeholder="密码" />
@@ -37,8 +37,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '58296672@qq.com',
+        password: 'tong'
       },
       passwordType: 'password',
       loading: false,

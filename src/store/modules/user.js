@@ -12,6 +12,7 @@ const user = {
     name: '',
     avatar: '',
     introduction: '',
+    superuser: '',
     roles: [],
     menu:[],
     setting: {
@@ -43,7 +44,10 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
-    }
+    },
+      SET_SUPERUSER: (state, superuser) => {
+          state.superuser = superuser
+      }
   },
 
   actions: {
@@ -72,6 +76,7 @@ const user = {
           commit('SET_ROLES',data.roles_vo);
           commit('SET_NAME', data.username);
           commit('SET_AVATAR', data.avatar);
+          commit('SET_SUPERUSER', data.is_superuser);
           resolve(response)
         }).catch(error => {
           reject(error)

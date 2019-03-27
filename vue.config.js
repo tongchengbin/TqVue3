@@ -3,7 +3,9 @@ const path = require('path');
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
+console.log(process.env);
 module.exports = {
+
     publicPath: '/',
     chainWebpack: config => {
         config.resolve.alias
@@ -85,5 +87,3 @@ module.exports = {
        
     }
 };
-
-console.log(process.env);

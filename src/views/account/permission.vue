@@ -27,7 +27,7 @@
             <div class="text item">
               <el-form :model="leftTree.form" ref="form">
                 <el-form-item label="父级" :label-width="formLabelWidth">
-                  <el-select v-model="leftTree.form.parent_id" clearable filterable placeholder="请选择">
+                  <el-select v-model="leftTree.form.parent" clearable filterable placeholder="请选择">
                     <el-option
                             v-for="item in menuOptions"
                             :key="item.id"
@@ -105,7 +105,7 @@
           loading:false,
           form: {
             id: null,
-            parent_id: null,
+            parent: null,
             label: '',
             key: '',
             only_superuser:false,
@@ -138,7 +138,6 @@
       },
       //设置菜单权限
       configRole(id){
-        console.log()
         this.roleData.currentMenuId=id;
         this.roleData.loading=true;
         let params={"menu":id};
@@ -167,7 +166,7 @@
       newAdd(){
         this.leftTree.form = {
           id: null,
-          parent_id: null,
+          parent: null,
           name: '',
         };
       },
@@ -177,6 +176,7 @@
       onSubmit(){
         if(this.leftTree.form.id){
           //更新
+            console.log(this.leftTree.form);
           http.put(api.ACCOUNT_MENU_PK, this.leftTree.form,this.leftTree.form.id).then(res => {
             this.featchData()
             })

@@ -12,11 +12,11 @@ import '@/styles/iconfont.css'
 import App from './App'
 import router from './router'
 import store from './store'
-
 import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control
 import  'font-awesome/css/font-awesome.min.css'
+
 import * as filters from './filters' // global filters
 
 Vue.use(Element, {

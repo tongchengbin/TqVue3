@@ -8,6 +8,9 @@ import router from "../../router";
  * @param route
  */
 function hasPermission(menu, route) {
+  if(store.getters.superuser){
+    return true;
+  }
   for(let i=0;i<menu.length;i++){
     if(menu[i].key===route.keyword){
       return true
@@ -37,6 +40,7 @@ function filterAsyncRouter(routes, menu) {
 
     }
   });
+  console.log(res)
   return res
 }
 

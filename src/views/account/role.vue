@@ -8,7 +8,6 @@
                 <el-col :span="5" :xs="24" :sm="24" :md="6" :lg="4" style="margin-bottom: 20px;">
                     <el-tree :data="leftRoleTree.roleTree"
                              v-loading="leftRoleTree.loading"
-                             show-checkbox
                              node-key="id"
                              highlight-current
                              default-expand-all
