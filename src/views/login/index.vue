@@ -14,13 +14,13 @@
         <span class="svg-container">
           <i class="iconfont tq-pswd"></i>
         </span>
-        <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
+        <el-input name="password" :type="passwordType" v-model="loginForm.password" autoComplete="on"
           placeholder="密码" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
       </el-form-item>
-      <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">登陆</el-button>
+      <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click="handleLogin">登陆</el-button>
     </el-form>
   </div>
 </template>
