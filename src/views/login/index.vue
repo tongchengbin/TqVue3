@@ -37,8 +37,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '58296672@qq.com',
-        password: 'tong'
+        username: '',
+        password: ''
       },
       passwordType: 'password',
       loading: false,
