@@ -33,7 +33,12 @@
                         {{ scope.row.ctime | timestampToTime }}
                     </template>
                 </el-table-column>
-                <el-table-column align="center"  prop="user" label=分享人 width="200"></el-table-column>
+                <el-table-column align="center"  prop="user" label=过期时间 width="200">
+                    <template slot-scope="scope">
+                        {{ scope.row.expried | timestampToTime }}
+                    </template>
+                </el-table-column>
+                </el-table-column>
                 <el-table-column align="center"  label=大小 width="80">
                     <template slot-scope="scope">
                         {{ scope.row.size | sizeTranslation }}

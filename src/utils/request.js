@@ -31,10 +31,17 @@ service.interceptors.response.use((response) => {
     return Promise.reject(error)
   }
   switch (error.response.status) {
-    case 302:
-      window.location = '/login';
-      break;
-    case 404:
+      case 302:
+          window.location = '/login';
+          break;
+      case 400:
+              Message({
+                  message: error.response.data.detail,
+                  type: 'error',
+                  duration: 5 * 1000
+              });
+          return error;
+      case 404:
         Message({
             message: '资源不存在',
             type: 'error',
